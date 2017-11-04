@@ -43,5 +43,7 @@
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allows you to add photos to meals</string>
+	<key>NSCameraUsageDescription</key>
+	<string></string>
 </dict>
 </plist>
