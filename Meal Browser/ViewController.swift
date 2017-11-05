@@ -15,11 +15,15 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
     @IBOutlet weak var photoImageView: UIImageView!
     
     @IBOutlet weak var ratingControl: RatingControl!
+    @IBOutlet weak var saveMeal: UIBarButtonItem!
+    
+    var meal: Meal?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         mealNameTextFld.delegate = self
+        updateSaveButtonState()
     }
     
     // MARK: UITextFieldDelegate
@@ -28,8 +32,19 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         return true
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveMeal.isEnabled = false
+    }
     func textFieldDidEndEditing(_ textField: UITextField) {
-       
+       updateSaveButtonState()
+        navigationItem.title = textField.text
+    }
+    
+    // MARK: private functions
+    private func updateSaveButtonState() {
+        let text = mealNameTextFld.text ?? ""
+        saveMeal.isEnabled = !text.isEmpty
+        
     }
     
     // MARK: UIImagePickerControllerDelegate
@@ -56,6 +71,22 @@ class ViewController: UIViewController, UITextFieldDelegate, UIImagePickerContro
         imagePickerController.delegate = self
         imagePickerController.allowsEditing = true
         present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    @IBAction func cancelAcn(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
+    // MARK: Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard  let button = sender as? UIBarButtonItem, button === saveMeal else {
+            print("save button not pressed")
+            return
+        }
+        
+        let name = mealNameTextFld.text ?? ""
+        let photo = photoImageView.image
+        let rating = ratingControl.rating
+        meal = Meal(name: name, photo: photo, r: rating)
     }
   
 }

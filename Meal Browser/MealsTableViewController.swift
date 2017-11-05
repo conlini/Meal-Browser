@@ -38,11 +38,18 @@ class MealsTableViewController: UITableViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? MealTableViewCell else {
             fatalError("Could not cast to MealTableViewCell")
         }
-        
+        let bundle = Bundle(for: type(of: self))
+        let defaultPhotoImg = UIImage(named: "defaultPhoto", in: bundle, compatibleWith: self.traitCollection)
         let meal = meals[indexPath.row]
-    
+        
         cell.mealName.text = meal.name
-        cell.mealPhoto.image = meal.photo
+        if let mealPhotoImg = meal.photo {
+            cell.mealPhoto.image = mealPhotoImg
+        } else {
+            cell.mealPhoto.image = defaultPhotoImg
+        }
+        
+        
         cell.mealRating.rating = meal.rating
         
         return cell
@@ -61,6 +68,18 @@ class MealsTableViewController: UITableViewController {
         }
         
         meals += [meal1, meal2, meal3]
+        
+        
+    }
+    
+    
+    // MARK: actions
+    @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
+        if let sourceViewController = sender.source as? ViewController, let meal = sourceViewController.meal {
+            let newIndexPath = IndexPath(row: meals.count, section: 0)
+            meals.append(meal)
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+        }
         
         
     }
