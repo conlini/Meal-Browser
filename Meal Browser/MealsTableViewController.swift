@@ -15,7 +15,11 @@ class MealsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadSamples() 
+        if let savedMeals = NSKeyedUnarchiver.unarchiveObject(withFile: Meal.ArchiveURL.path) as? [Meal] {
+            meals += savedMeals
+        } else {
+            loadSamples()
+        }
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         
@@ -80,7 +84,7 @@ class MealsTableViewController: UITableViewController {
             meals.append(meal)
             tableView.insertRows(at: [newIndexPath], with: .automatic)
         }
-        
+        NSKeyedArchiver.archiveRootObject(meals, toFile: Meal.ArchiveURL.path)
         
     }
     
